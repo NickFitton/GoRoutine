@@ -1,30 +1,16 @@
 package users
 
 import (
-	"log"
 	"time"
 
 	"github.com/google/uuid"
 )
 
 type User struct {
-	id          uuid.UUID
-	email       string `binding:"required"`
-	createdAt   time.Time
-	lastLoginAt time.Time
-}
-
-func New(id uuid.UUID,
-	email string,
-	createdAt time.Time,
-	lastLoginAt time.Time) User {
-	newUser := User{
-		id:          id,
-		email:       email,
-		createdAt:   createdAt,
-		lastLoginAt: lastLoginAt,
-	}
-	return newUser
+	Id          uuid.UUID `json:"id"`
+	Email       string `binding:"required" json:"email"`
+	CreatedAt   time.Time `json:"createdAt"`
+	LastLoginAt time.Time `json:"lastLoginAt"`
 }
 
 var users = []User{}
@@ -34,20 +20,16 @@ func GetAll() []User {
 }
 
 func Create(user User) User {
-	newUser := User{
-		email:       user.email,
-		id:          uuid.New(),
-		createdAt:   time.Now(),
-		lastLoginAt: time.Now(),
-	}
-	users = append(users, newUser)
-	log.Println(newUser)
-	return newUser
+		user.Id= uuid.New();
+		user.CreatedAt= time.Now();
+		user.LastLoginAt= time.Now();
+	users = append(users, user)
+	return user
 }
 
 func Delete(emailAddress string) bool {
 	for i, user := range users {
-		if user.email == emailAddress {
+		if user.Email == emailAddress {
 			users = append(users[:i], users[i+1:]...)
 			return true
 		}

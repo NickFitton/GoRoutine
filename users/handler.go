@@ -2,19 +2,12 @@ package users
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 func HandleGetAll(c *gin.Context) {
-	user := User{
-		// id: uuid.New(),
-		email:       "nick.fitton@ovo.com",
-		createdAt:   time.Now(),
-		lastLoginAt: time.Now(),
-	}
-	c.JSON(http.StatusOK, gin.H{"data": []User{user}})
+	c.JSON(http.StatusOK, gin.H{"data": GetAll()})
 }
 
 func HandlePost(c *gin.Context) {
@@ -25,9 +18,8 @@ func HandlePost(c *gin.Context) {
 		return
 	}
 
-	// createdUser := Create(user)
+	createdUser := Create(user)
 	// fmt.Println(createdUser)
 	// log.Println(createdUser)
-	// c.JSON(http.StatusCreated, gin.H{"data": createdUser, "other": user})
-	c.JSON(http.StatusCreated, gin.H{"other": user})
+	c.JSON(http.StatusCreated, gin.H{"data": createdUser})
 }
