@@ -2,14 +2,22 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"routine.nfitton.com/routines"
 	"routine.nfitton.com/users"
 )
 
 func setupRouter() *gin.Engine {
 	r := gin.Default()
 
-	r.GET("/users", users.HandleGetAll)
 	r.POST("/users", users.HandlePost)
+	r.GET("/users", users.HandleGetAll)
+	r.GET("/users/:userId", users.HandleGet)
+	r.DELETE("/users/:userId", users.HandleDelete)
+
+	r.POST("/users/:userId/routines", routines.HandlePost)
+	r.GET("/users/:userId/routines", routines.HandleGetAll)
+	r.GET("/users/:userId/routines/:routineId", routines.HandleGetByRoutineId)
+	r.DELETE("/users/:userId/routines/:routineId", routines.HandleDeleteByRoutineId)
 
 	return r
 }
