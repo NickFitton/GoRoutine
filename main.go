@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"routine.nfitton.com/app"
 	"routine.nfitton.com/routines"
 	"routine.nfitton.com/users"
 )
@@ -9,6 +10,10 @@ import (
 func setupRouter() *gin.Engine {
 	r := gin.Default()
 
+
+	r.HTMLRender = &app.TemplRender{}
+	component := app.Hello("John")
+	r.GET("/", app.HtmlResponse(component))
 	r.POST("/users", users.HandlePost)
 	r.GET("/users", users.HandleGetAll)
 	r.GET("/users/:userId", users.HandleGet)
