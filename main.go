@@ -14,15 +14,17 @@ func setupRouter() *gin.Engine {
 	r.HTMLRender = &app.TemplRender{}
 	component := app.Hello("John")
 	r.GET("/", app.HtmlResponse(component))
-	r.POST("/users", users.HandlePost)
-	r.GET("/users", users.HandleGetAll)
-	r.GET("/users/:userId", users.HandleGet)
-	r.DELETE("/users/:userId", users.HandleDelete)
 
-	r.POST("/users/:userId/routines", routines.HandlePost)
-	r.GET("/users/:userId/routines", routines.HandleGetAll)
-	r.GET("/users/:userId/routines/:routineId", routines.HandleGetByRoutineId)
-	r.DELETE("/users/:userId/routines/:routineId", routines.HandleDeleteByRoutineId)
+
+	r.POST("/api/users", users.HandlePost)
+	r.GET("/api/users", users.HandleGetAll)
+	r.GET("/api/users/:userId", users.HandleGet)
+	r.DELETE("/api/users/:userId", users.HandleDelete)
+
+	r.POST("/api/users/:userId/routines", routines.HandlePost)
+	r.GET("/api/users/:userId/routines", routines.HandleGetAll)
+	r.GET("/api/users/:userId/routines/:routineId", routines.HandleGetByRoutineId)
+	r.DELETE("/api/users/:userId/routines/:routineId", routines.HandleDeleteByRoutineId)
 
 	return r
 }
