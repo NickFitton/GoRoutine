@@ -1,0 +1,70 @@
+package templates
+
+import (
+  "routine.nfitton.com/routines"
+  "routine.nfitton.com/users"
+  "strconv"
+)
+
+templ Routines(user users.User, routines []routines.Routine) {
+  <div>
+    <h1>Welcome {user.Email}</h1>
+		<p>Manage your routines and record an action here!</p>
+    <div>
+      <h2>Create a new routine</h2>
+      <form action="/api/routines" method="post">
+        <ul>
+          <li>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" />
+          </li>
+          <li>
+            <label for="public">Public:</label>
+            <input type="text" id="public" name="public" />
+          </li>
+          <li>
+            <label for="every">Every:</label>
+            <input type="number" id="every" name="every" />
+          </li>
+          <li>
+            <label for="inDays">InDays:</label>
+            <input type="number" id="inDays" name="inDays" />
+          </li>
+          <li>
+            <label for="offset">Offset:</label>
+            <input type="number" id="offset" name="offset" />
+          </li>
+          <li>
+            <button type="submit">Create user</button>
+          </li>
+        </ul>
+      </form>
+
+    </div>
+    <div>
+      <h2>Users</h2>
+      <ul>
+        for _, routine := range routines {
+          <li>
+            <ul>
+              <li>{routine.Id.String()}</li>
+              <li>{routine.Name}</li>
+              @isPublic(routine.Public)
+              <li>{strconv.Itoa(routine.Every)}</li>
+              <li>{strconv.Itoa(routine.InDays)}</li>
+              <li>{strconv.Itoa(routine.Offset)}</li>
+            </ul>
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+}
+
+templ isPublic(public bool) {
+  if public {
+    <li>Public</li>
+  } else {
+    <li>Private</li>
+  }
+}

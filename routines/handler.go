@@ -30,7 +30,6 @@ func HandlePost(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"data": createdRoutine})
 }
 
-
 func HandleGetAll(c *gin.Context) {
 	userId, userIdError := response.GetIdFromPath(c, "userId")
 	if userIdError != nil {

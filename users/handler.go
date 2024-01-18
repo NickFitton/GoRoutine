@@ -36,6 +36,7 @@ func HandlePost(c *gin.Context) {
 	}
 
 	createdUser := Create(user)
+	c.Header("Location", fmt.Sprintf("/users/%s", createdUser.Id))
 	c.JSON(http.StatusCreated, gin.H{"data": createdUser})
 }
 
@@ -53,5 +54,3 @@ func HandleDelete(c *gin.Context) {
 	}
 	c.JSON(http.StatusAccepted, gin.H{})
 }
-
-

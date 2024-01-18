@@ -1,0 +1,72 @@
+package templates
+
+import (
+  "fmt"
+  "routine.nfitton.com/users"
+ )
+
+templ Root(users []users.User) {
+  <div>
+    <h1>GoRoutines</h1>
+		<p>Get started by creating/picking a new user</p>
+    <div>
+      <h2>Create a new user</h2>
+      <form id="createUserForm">
+        <ul>
+          <li>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="user_name" />
+          </li>
+          <li>
+            <label for="mail">Email:</label>
+            <input type="email" id="mail" name="email" />
+          </li>
+          <li>
+            <label for="msg">Message:</label>
+            <textarea id="msg" name="user_message"></textarea>
+          </li>
+          <li>
+            <button type="submit">Create user</button>
+          </li>
+        </ul>
+      </form>
+
+    </div>
+    <div>
+      <h2>Users</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody>
+          for _, user := range users {
+            <tr>
+              <td>{user.Id.String()}</td>
+              <td>{user.Email}</td>
+              <td><a href={templ.SafeURL(fmt.Sprintf("/users/%s", user.Id.String()))}>Be user</a></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script async>
+    const form = document.getElementById("createUserForm");
+    form.addEventListener("submit", (event) => {
+      const email = document.getElementById("mail").value;
+      event.preventDefault();
+      console.log(email);
+      const response = await fetch("localhost:8080/api/users", {
+        method: "POST",
+        body: { email },
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      console.log(response);
+    });
+  </script>
+}

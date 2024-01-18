@@ -10,11 +10,8 @@ import (
 func setupRouter() *gin.Engine {
 	r := gin.Default()
 
-
 	r.HTMLRender = &app.TemplRender{}
-	component := app.Hello("John")
-	r.GET("/", app.HtmlResponse(component))
-
+	r.GET("/", app.HandleRoot)
 
 	r.POST("/api/users", users.HandlePost)
 	r.GET("/api/users", users.HandleGetAll)
