@@ -172,7 +172,7 @@ func Root(users []users.User) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</tbody></table></div></div><script>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</tbody></table></div></div><script async>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -182,6 +182,24 @@ func Root(users []users.User) templ.Component {
       const email = document.getElementById("mail").value;
       event.preventDefault();
       console.log(email);
+      fetch("http://localhost:8080/api/users", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }).then(response => {
+        console.log(response);
+        try {
+
+        const location = response.headers.get("Location");
+        console.log("Location", location)
+        window.location.replace(location);
+        } catch (e) {
+          console.error(e)
+        }
+      })
+      .catch(console.error);
     });
   `
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var16)

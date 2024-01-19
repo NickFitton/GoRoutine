@@ -8,7 +8,7 @@ import (
 templ Root(users []users.User) {
   <div>
     <h1>GoRoutines</h1>
-		<p>Get started by creating/picking a new user</p>
+    <p>Get started by creating/picking a new user</p>
     <div>
       <h2>Create a new user</h2>
       <form id="createUserForm">
@@ -59,14 +59,24 @@ templ Root(users []users.User) {
       const email = document.getElementById("mail").value;
       event.preventDefault();
       console.log(email);
-      const response = await fetch("localhost:8080/api/users", {
+      fetch("http://localhost:8080/api/users", {
         method: "POST",
-        body: { email },
+        body: JSON.stringify({ email }),
         headers: {
           "Content-Type": "application/json"
         }
-      });
-      console.log(response);
+      }).then(response => {
+        console.log(response);
+        try {
+
+        const location = response.headers.get("Location");
+        console.log("Location", location)
+        window.location.replace(location);
+        } catch (e) {
+          console.error(e)
+        }
+      })
+      .catch(console.error);
     });
   </script>
 }

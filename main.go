@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"routine.nfitton.com/app"
 	"routine.nfitton.com/routines"
@@ -10,8 +11,13 @@ import (
 func setupRouter() *gin.Engine {
 	r := gin.Default()
 
+	r.Use(cors.New(cors.Config{
+		AllowOrigins: []string{"http://localhost:8080"},
+		AllowMethods: []string{"PUT", "PATCH", "GET", "POST", "OPTIONS"},
+	}))
 	r.HTMLRender = &app.TemplRender{}
 	r.GET("/", app.HandleRoot)
+	r.GET("/users/:userId", app.HandleRoutines)
 
 	r.POST("/api/users", users.HandlePost)
 	r.GET("/api/users", users.HandleGetAll)

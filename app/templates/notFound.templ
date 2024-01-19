@@ -1,0 +1,34 @@
+package templates
+
+import "fmt"
+
+templ NotFound(reason string, err error) {
+  <div class="container">
+    <div class="message">
+      <h1>404 Page not found</h1>
+      <h2>{reason}</h2>
+      <p>{fmt.Sprintf("%s", err)}</p>
+    </div>
+  </div>
+  <style>
+    .container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .message {
+      background-color: #eee;
+      border-radius: 1rem;
+      border: 1px solid #ddd;
+      display: flex;
+      justify-content: center;
+    }
+
+    h1, h2, p {
+      text-align: center;
+    }
+  </style>
+}
