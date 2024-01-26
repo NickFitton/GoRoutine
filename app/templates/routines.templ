@@ -22,8 +22,10 @@ var key = [][]string{
 
 templ Routines(taskDays [][]TaskDay) {
   <div class="w-full p-6 space-y-6">
+    <h1 class="text-2xl font-bold">Create a routine</h1>
+    @RoutineCreator()
     <h1 class="text-2xl font-bold">Your Routines</h1>
-    <div class="grid sm:grid-cols-5 gap-4">
+    <div class="grid sm:grid-cols-5 gap-4" id="key">
       for _, keyItem := range key {
         <div class="flex items-center gap-2">
           <div class={"size-4 rounded-sm", keyItem[1]}></div>
@@ -49,4 +51,97 @@ templ Routines(taskDays [][]TaskDay) {
       </div>
     }
   </div>
+}
+
+templ RoutineCreator() {
+  <div>
+    <form>
+      <label for="everyday">Every day</label>
+      <input type="checkbox" id="everyday" name="everyday"/>
+      <p> -- OR -- </p>
+    <!-- 5 times every 5 days-->
+      <select name="every" id="every-select">
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+      </select>
+      <span>times every</span>
+      <select name="inDays" id="in-days-select">
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+      </select>
+      <span>offset by</span>
+      <select name="offset" id="offset-select">
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+      </select>
+    </form>
+    <div id="preview" class="flex items-center gap-2">
+      for i := 0; i<15; i++ {
+        <div id={"preview-" + strconv.Itoa(i)} class={"size-16", "rounded-md", "bg-gray-300", templ.KV("border-2 border-yellow-500", i == 7)}></div>
+      }
+    </div>
+  </div>
+  <script>
+    const restylePreview = (every, inDays, offset = 0) => {
+      const todayEpoch = Math.floor(Date.now() / 86400000);
+      for (let i=0; i < 15; i++) {
+        const segment = document.getElementById("preview-" + i);
+        segment.classList.remove(...["bg-red-200", "bg-green-500", "bg-gray-300", "bg-yellow-200"]);
+        const epochMatch = ((todayEpoch - 7 + i + offset) % inDays < every);
+        const active = epochMatch ? (i < 8 ? "bg-red-200" : "bg-yellow-200") : "bg-gray-300";
+        segment.classList.add(active);
+      }
+    } 
+
+    document.getElementById("every-select").addEventListener("input", (e) => {
+      const everySelect = e.target.value;
+      const inDaysSelect = document.getElementById("in-days-select").value;
+      restylePreview(everySelect, inDaysSelect);
+    });
+    document.getElementById("in-days-select").addEventListener("input", (e) => {
+      const everySelect = document.getElementById("every-select").value;
+      const inDaysSelect = e.target.value;
+      restylePreview(everySelect, inDaysSelect);
+    });
+    document.getElementById("offset-select").addEventListener("input", (e) => {
+      const everySelect = document.getElementById("every-select").value;
+      const inDaysSelect = document.getElementById("in-days-select").value;
+      const offsetSelect = parseInt(e.target.value);
+      restylePreview(everySelect, inDaysSelect, offsetSelect);
+    });
+
+
+    document.getElementById("everyday").addEventListener("input", (e) => {
+      const {checked} = e.target;
+      console.log(checked);
+
+      if (checked) {
+        document.getElementById("in-days-select").setAttribute("disabled", true);
+        document.getElementById("every-select").setAttribute("disabled", true);
+        document.getElementById("offset-select").setAttribute("disabled", true);
+        restylePreview(1, 1);
+        return;
+      }
+      document.getElementById("in-days-select").removeAttribute("disabled");
+      document.getElementById("every-select").removeAttribute("disabled");
+      document.getElementById("offset-select").removeAttribute("disabled");
+      const everySelect =  document.getElementById("every-select").value;
+      const inDaysSelect = document.getElementById("in-days-select").value;
+      restylePreview(everySelect, inDaysSelect);
+    })
+  </script>
 }
