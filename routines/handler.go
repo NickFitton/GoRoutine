@@ -27,6 +27,7 @@ func HandlePost(c *gin.Context) {
 
 	createdRoutine := Create(routine, userId)
 
+	c.Header("Location", fmt.Sprintf("/users/%s", userId))
 	c.JSON(http.StatusCreated, gin.H{"data": createdRoutine})
 }
 

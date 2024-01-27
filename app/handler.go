@@ -1,11 +1,12 @@
 package app
 
 import (
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"routine.nfitton.com/app/templates"
+	"routine.nfitton.com/response"
 	"routine.nfitton.com/routines"
 	"routine.nfitton.com/users"
 )
@@ -75,38 +76,29 @@ func HandleRoutines(c *gin.Context) {
 		Title:       "Your routines",
 		Description: "A routine management project written in Golang",
 	}
-	// userId, err := response.GetIdFromPath(c, "userId")
-	// if err != nil {
-	// 	c.HTML(http.StatusNotFound, "", templates.Wrapper(metadata, templates.NotFound("User ID invalid", err)))
-	// 	return
-	// }
-
-	// user, found := users.FindById(userId)
-	// if !found {
-	// 	c.HTML(http.StatusNotFound, "", templates.Wrapper(metadata, templates.NotFound("User not found", err)))
-	// 	return
-	// }
-
-	// Generate a random routine
-
-	r := routines.Routine{
-		Id:     uuid.New(),
-		Name:   "Do Duolingo",
-		UserId: uuid.New(),
-		Public: false,
-		InDays: 6,
-		Every:  4,
-		Offset: 0,
+	userId, err := response.GetIdFromPath(c, "userId")
+	if err != nil {
+		c.HTML(http.StatusNotFound, "", templates.Wrapper(metadata, templates.NotFound("User ID invalid", err)))
+		return
 	}
-	routines := [][]templates.TaskDay{}
 
-	for off := 0; off < 6; off++ {
+	_, found := users.FindById(userId)
+	if !found {
+		c.HTML(http.StatusNotFound, "", templates.Wrapper(metadata, templates.NotFound("User not found", err)))
+		return
+	}
+
+	routines := routines.GetAllByUser(userId, false)
+
+	taskDays := []templates.RoutineDTO{}
+
+	for _, routine := range routines {
 		daysRange := []templates.TaskDay{}
 		for i := -7; i <= 7; i++ {
 			date := time.Now().AddDate(0, 0, i)
-			unixDays := int(date.Unix()/dayInSeconds) - off
-			mod := unixDays % r.InDays
-			isActive := mod < r.Every
+			unixDays := int(date.Unix()/dayInSeconds) - routine.Offset
+			mod := unixDays % routine.InDays
+			isActive := mod < routine.Every
 			status := determineStatus(i, isActive)
 			daysRange = append(daysRange, templates.TaskDay{
 				Date:        date,
@@ -116,11 +108,10 @@ func HandleRoutines(c *gin.Context) {
 				Today:       i == 0,
 			})
 		}
-		routines = append(routines, daysRange)
+		taskDays = append(taskDays, templates.RoutineDTO{Days: daysRange, Name: routine.Name})
 	}
 
-	// userRoutines := routines.GetAllByUser(userId, false)
-	content := templates.Routines(routines)
+	content := templates.Routines(taskDays, userId)
 	component := templates.Wrapper(metadata, content)
 	HtmlResponse(component)(c)
 }

@@ -3,14 +3,14 @@ package templates
 import "fmt"
 
 templ NotFound(reason string, err error) {
-  <div class="container">
-    <div class="message">
-      <h1>404 Page not found</h1>
-      <h2>{reason}</h2>
-      <p>{fmt.Sprintf("%s", err)}</p>
-    </div>
-  </div>
-  <style>
+	<div class="container">
+		<div class="message">
+			<h1>404 Page not found</h1>
+			<h2>{ reason }</h2>
+			<p>{ fmt.Sprintf("%s", err) }</p>
+		</div>
+	</div>
+	<style>
     .container {
       width: 100vw;
       height: 100vh;

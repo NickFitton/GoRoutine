@@ -25,7 +25,7 @@ func GetAllByUser(userId uuid.UUID, publicOnly bool) []Routine {
 	userRoutines := []Routine{}
 
 	for _, routine := range routines {
-		if routine.UserId == userId && (publicOnly == false || routine.Public == true) {
+		if routine.UserId == userId && (!publicOnly || routine.Public) {
 			userRoutines = append(userRoutines, routine)
 		}
 	}
